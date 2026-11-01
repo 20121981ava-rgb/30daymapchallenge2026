@@ -19,7 +19,7 @@
             margin: 0;
         }
         </style>
-        <title></title>
+        <title>#30DayMapChallenge - Day 1: Yerba Mate Factories</title>
     </head>
     <body>
         <div id="map">
@@ -37,13 +37,21 @@
         <script src="js/leaflet.photon.js"></script>
         <script src="data/mate_factories_1.js"></script>
         <script>
+        // Инициализация карты с фокусом на центр Парагвая и масштабом 7
         var map = L.map('map', {
             zoomControl:false, maxZoom:28, minZoom:1
         }).setView([-25.8, -56.5], 7);
+
         var hash = new L.Hash(map);
-        map.attributionControl.setPrefix('<a href="https://github.com/qgis2web/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        map.attributionControl.setPrefix('<a href="https://github.com" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
-        // remove popup's row if "visible-with-data"
+        
+        // Принудительное подключение стандартной работающей подложки OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Функция удаления пустых строк из всплывающего окна
         function removeEmptyRowsFromPopupContent(content, feature) {
          var tempDiv = document.createElement('div');
          tempDiv.innerHTML = content;
@@ -57,7 +65,8 @@
          }
          return tempDiv.innerHTML;
         }
-        // modify popup if contains media
+
+        // Функция обработки медиа во всплывающих окнах
         function addClassToPopupIfMedia(content, popup) {
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = content;
@@ -68,16 +77,11 @@
                     popup._contentNode.classList.add('media');
                     var img = popup._contentNode.querySelector('td img');
                     if (img) {
-                        // If already loaded (cache), update immediately
                         if (img.complete && img.naturalHeight > 0) {
                             popup.update();
                         } else {
-                            img.addEventListener('load', function() {
-                                popup.update();
-                            });
-                            img.addEventListener('error', function() {
-                                popup.update();
-                            });
+                            img.addEventListener('load', function() { popup.update(); });
+                            img.addEventListener('error', function() { popup.update(); });
                         }
                     }
                 } else if (/\.(mp3|wav|ogg|aac)$/i.test(src)) {
@@ -100,7 +104,6 @@
                     video.style.maxWidth = "60vw";
                     imgTd.parentNode.replaceChild(video, imgTd);
                     popup._contentNode.classList.add('media');
-                    // Aggiorna il popup quando il video carica i metadati
                     video.addEventListener('loadedmetadata', function() {
                         popup.update();
                     });
@@ -115,31 +118,28 @@
                 popup._contentNode.classList.remove('media');
             }
         }
+        
         var zoomControl = L.control.zoom({
             position: 'topleft'
         }).addTo(map);
+        
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
         }
+        
         function pop_mate_factories_1(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(String(feature.properties['id']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <th scope="row">Бренд:</th>\
+                        <td>' + (feature.properties['brand'] !== null ? autolinker.link(String(feature.properties['brand']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['brand'] !== null ? autolinker.link(String(feature.properties['brand']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <th scope="row">Компания:</th>\
+                        <td>' + (feature.properties['company'] !== null ? autolinker.link(String(feature.properties['company']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['company'] !== null ? autolinker.link(String(feature.properties['company']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['department'] !== null ? autolinker.link(String(feature.properties['department']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['lat'] !== null ? autolinker.link(String(feature.properties['lat']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['lon'] !== null ? autolinker.link(String(feature.properties['lon']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <th scope="row">Департамент:</th>\
+                        <td>' + (feature.properties['department'] !== null ? autolinker.link(String(feature.properties['department']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
@@ -167,7 +167,8 @@
         }
         map.createPane('pane_mate_factories_1');
         map.getPane('pane_mate_factories_1').style.zIndex = 401;
-        map.getPane('pane_mate_factories_1').style['mix-blend-mode'] = 'normal';
+        map.getPane('pane_mate_factories_1').style.pointerEvents = 'none';
+        
         var layer_mate_factories_1 = new L.geoJson(json_mate_factories_1, {
             attribution: '',
             interactive: true,
@@ -186,29 +187,6 @@
         bounds_group.addLayer(layer_mate_factories_1);
         map.addLayer(layer_mate_factories_1);
         setBounds();
-        var i = 0;
-        layer_mate_factories_1.eachLayer(function(layer) {
-            var context = {
-                feature: layer.feature,
-                variables: {}
-            };
-            layer.bindTooltip((layer.feature.properties['brand'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Open Sans\', sans-serif;">' + layer.feature.properties['brand']).replace(/\\n/g, '<br>') + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_mate_factories_1'});
-            labels.push(layer);
-            totalMarkers += 1;
-              layer.added = true;
-              addLabel(layer, i);
-              i++;
-        });
-        resetLabels([layer_mate_factories_1]);
-        map.on("zoomend", function(){
-            resetLabels([layer_mate_factories_1]);
-        });
-        map.on("layeradd", function(){
-            resetLabels([layer_mate_factories_1]);
-        });
-        map.on("layerremove", function(){
-            resetLabels([layer_mate_factories_1]);
-        });
-        </script>        
+        </script>
     </body>
 </html>
