@@ -4,6 +4,7 @@
         }
         html, body, #map {
 			overflow: hidden;
+			background-color: #f4efe1;
         }
         .col9{
 			height: 100%!important;
