@@ -17,7 +17,7 @@ html, body, #map {
 
 /* Применяем фильтр сепии ко всей графике подложки (картинки, вектор, canvas) */
 .leaflet-tile, canvas, svg, .leaflet-layer {
-    filter: sepia(90%) brightness(92%) contrast(85%) !important;
+    filter: sepia(70%) brightness(92%) contrast(85%) !important;
 }
 
 /* Стили интерфейса и панелей */
