@@ -198,4 +198,7 @@
         .leaflet-marker-icon{
             white-space: nowrap;
         }
-        
+        .leaflet-tile {
+    filter: sepia(80%) brightness(95%) contrast(90%);
+}
+
