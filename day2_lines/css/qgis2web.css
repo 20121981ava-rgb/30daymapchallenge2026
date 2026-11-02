@@ -200,5 +200,9 @@
         }
         .leaflet-tile {
     filter: sepia(80%) brightness(95%) contrast(90%);
+		canvas {
+    filter: sepia(80%) brightness(95%) contrast(90%);
+}
+	
 }
 
