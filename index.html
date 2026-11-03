@@ -19,7 +19,7 @@
             margin: 0;
         }
         </style>
-        <title>#30DayMapChallenge - Day 1: Yerba Mate Factories</title>
+        <title></title>
     </head>
     <body>
         <div id="map">
@@ -35,23 +35,15 @@
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
         <script src="js/leaflet.photon.js"></script>
-        <script src="data/mate_factories_1.js"></script>
+        <script src="data/paraguay_adm1geoboundariespryadm1_simplified_0.js"></script>
         <script>
-        // Инициализация карты с фокусом на центр Парагвая и масштабом 7
         var map = L.map('map', {
             zoomControl:false, maxZoom:28, minZoom:1
-        }).setView([-25.8, -56.5], 7);
-
+        }).fitBounds([[-27.800093507549423,-64.8896836858022],[-18.897601401122007,-47.92418217332064]]);
         var hash = new L.Hash(map);
-        map.attributionControl.setPrefix('<a href="https://github.com" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        map.attributionControl.setPrefix('<a href="https://github.com/qgis2web/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
-        
-        // Принудительное подключение стандартной работающей подложки OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        // Функция удаления пустых строк из всплывающего окна
+        // remove popup's row if "visible-with-data"
         function removeEmptyRowsFromPopupContent(content, feature) {
          var tempDiv = document.createElement('div');
          tempDiv.innerHTML = content;
@@ -65,8 +57,7 @@
          }
          return tempDiv.innerHTML;
         }
-
-        // Функция обработки медиа во всплывающих окнах
+        // modify popup if contains media
         function addClassToPopupIfMedia(content, popup) {
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = content;
@@ -77,11 +68,16 @@
                     popup._contentNode.classList.add('media');
                     var img = popup._contentNode.querySelector('td img');
                     if (img) {
+                        // If already loaded (cache), update immediately
                         if (img.complete && img.naturalHeight > 0) {
                             popup.update();
                         } else {
-                            img.addEventListener('load', function() { popup.update(); });
-                            img.addEventListener('error', function() { popup.update(); });
+                            img.addEventListener('load', function() {
+                                popup.update();
+                            });
+                            img.addEventListener('error', function() {
+                                popup.update();
+                            });
                         }
                     }
                 } else if (/\.(mp3|wav|ogg|aac)$/i.test(src)) {
@@ -104,6 +100,7 @@
                     video.style.maxWidth = "60vw";
                     imgTd.parentNode.replaceChild(video, imgTd);
                     popup._contentNode.classList.add('media');
+                    // Aggiorna il popup quando il video carica i metadati
                     video.addEventListener('loadedmetadata', function() {
                         popup.update();
                     });
@@ -118,28 +115,35 @@
                 popup._contentNode.classList.remove('media');
             }
         }
-        
         var zoomControl = L.control.zoom({
             position: 'topleft'
         }).addTo(map);
-        
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
         }
-        
-        function pop_mate_factories_1(feature, layer) {
+        function pop_paraguay_adm1geoboundariespryadm1_simplified_0(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
-                        <th scope="row">Бренд:</th>\
-                        <td>' + (feature.properties['brand'] !== null ? autolinker.link(String(feature.properties['brand']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(String(feature.properties['fid']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Компания:</th>\
-                        <td>' + (feature.properties['company'] !== null ? autolinker.link(String(feature.properties['company']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <th scope="row">shapeName</th>\
+                        <td>' + (feature.properties['shapeName'] !== null ? autolinker.link(String(feature.properties['shapeName']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Департамент:</th>\
-                        <td>' + (feature.properties['department'] !== null ? autolinker.link(String(feature.properties['department']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['shapeISO'] !== null ? autolinker.link(String(feature.properties['shapeISO']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['shapeID'] !== null ? autolinker.link(String(feature.properties['shapeID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['shapeGroup'] !== null ? autolinker.link(String(feature.properties['shapeGroup']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['shapeType'] !== null ? autolinker.link(String(feature.properties['shapeType']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['region'] !== null ? autolinker.link(String(feature.properties['region']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
@@ -149,44 +153,59 @@
 			layer.bindPopup(content, { maxHeight: 400 });
         }
 
-        function style_mate_factories_1_0() {
+        function style_paraguay_adm1geoboundariespryadm1_simplified_0_0() {
             return {
-                pane: 'pane_mate_factories_1',
-                radius: 8.0,
+                pane: 'pane_paraguay_adm1geoboundariespryadm1_simplified_0',
                 opacity: 1,
-                color: 'rgba(255,255,255,1.0)',
+                color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                weight: 2.0,
+                weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(51,160,44,1.0)',
+                fillColor: 'rgba(162,65,22,1.0)',
                 interactive: true,
             }
         }
-        map.createPane('pane_mate_factories_1');
-        map.getPane('pane_mate_factories_1').style.zIndex = 401;
-        map.getPane('pane_mate_factories_1').style.pointerEvents = 'none';
-        
-        var layer_mate_factories_1 = new L.geoJson(json_mate_factories_1, {
+        map.createPane('pane_paraguay_adm1geoboundariespryadm1_simplified_0');
+        map.getPane('pane_paraguay_adm1geoboundariespryadm1_simplified_0').style.zIndex = 400;
+        map.getPane('pane_paraguay_adm1geoboundariespryadm1_simplified_0').style['mix-blend-mode'] = 'normal';
+        var layer_paraguay_adm1geoboundariespryadm1_simplified_0 = new L.geoJson(json_paraguay_adm1geoboundariespryadm1_simplified_0, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_mate_factories_1',
-            layerName: 'layer_mate_factories_1',
-            pane: 'pane_mate_factories_1',
-            onEachFeature: pop_mate_factories_1,
-            pointToLayer: function (feature, latlng) {
-                var context = {
-                    feature: feature,
-                    variables: {}
-                };
-                return L.circleMarker(latlng, style_mate_factories_1_0(feature));
-            },
+            dataVar: 'json_paraguay_adm1geoboundariespryadm1_simplified_0',
+            layerName: 'layer_paraguay_adm1geoboundariespryadm1_simplified_0',
+            pane: 'pane_paraguay_adm1geoboundariespryadm1_simplified_0',
+            onEachFeature: pop_paraguay_adm1geoboundariespryadm1_simplified_0,
+            style: style_paraguay_adm1geoboundariespryadm1_simplified_0_0,
         });
-        bounds_group.addLayer(layer_mate_factories_1);
-        map.addLayer(layer_mate_factories_1);
+        bounds_group.addLayer(layer_paraguay_adm1geoboundariespryadm1_simplified_0);
+        map.addLayer(layer_paraguay_adm1geoboundariespryadm1_simplified_0);
         setBounds();
-        </script>
+        var i = 0;
+        layer_paraguay_adm1geoboundariespryadm1_simplified_0.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['shapeName'] !== null?String('<div style="color: #323232; font-size: 7pt; font-style: italic; font-family: \'Open Sans\', sans-serif;">' + layer.feature.properties['shapeName']).replace(/\\n/g, '<br>') + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_paraguay_adm1geoboundariespryadm1_simplified_0'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        resetLabels([layer_paraguay_adm1geoboundariespryadm1_simplified_0]);
+        map.on("zoomend", function(){
+            resetLabels([layer_paraguay_adm1geoboundariespryadm1_simplified_0]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_paraguay_adm1geoboundariespryadm1_simplified_0]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_paraguay_adm1geoboundariespryadm1_simplified_0]);
+        });
+        </script>        
     </body>
 </html>
